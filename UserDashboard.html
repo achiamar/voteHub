@@ -1,0 +1,433 @@
+@model votehub.Web.Models.ViewModels.UserDashboardViewModel
+
+@{
+
+    Layout = "~/Views/Shared/_Layoutvotehub.cshtml";
+}
+
+<div data-ng-controller="dashboardController as dashboard">
+
+    @* Full User Profile, script below *@
+
+    <div id="userDetails" data-ng-show="dashboard.selectedUser" data-ng-include="'/scripts/app/users/dashboard/userdetails.html'">
+    </div>
+
+    @* Users Dashboard, script below *@
+    <div class="col-md-12">
+        <div class="titleRow" data-ng-show="!dashboard.selectedUser">
+            <h2 class="headingStyle">USER DASHBOARD</h2>
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="fontBorderFormat col-sm-3"><center>First Name</center></th>
+                        <th class="fontBorderFormat col-sm-3"><center>Last Name</center></th>
+                        <th class="fontBorderFormat col-sm-3"><center>Handle</center></th>
+                        <th class="fontBorderFormat col-sm-3"><center>E-mail</center></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+        <div data-ng-repeat="votehubUser in dashboard.items track by votehubUser.id" class="row"
+             data-ng-include="'/scripts/app/users/dashboard.html'" data-ng-show="!dashboard.selectedUser">
+        </div>
+    </div>
+
+</div>
+
+
+@* Users Dashboard script *@
+<script type="text/ng-template" id="/scripts/app/users/dashboard.html">
+
+    <div class="table table-hover">
+
+        <div>
+            <a data-ng-click="dashboard.selectUser(votehubUser)" href="">
+                <div class="col-sm-3 firstName"><center> {{votehubUser.firstName}}</center></div>
+                <div class="col-sm-3 lastName"><center>{{votehubUser.lastName}}</center></div>
+                <div class="col-sm-3 handle"><center>{{votehubUser.handle}}</center></div>
+                <div class="col-sm-3 email"><center>{{votehubUser.email}}</center></div>
+            </a>
+        </div>
+    </div>
+
+</script>
+
+
+@*Full User Profile script*@
+<script type="text/ng-template" id="/scripts/app/users/dashboard/userdetails.html">
+
+    <div class="col-md-12">
+
+        <div id="userDetails" data-ng-show="dashboard.selectedUser">
+            <div class="row">
+                <form role="form" id="formEditUser">
+                    <h2 class="detailsHeaderStyle"> {{dashboard.selectedUser.firstName}} {{dashboard.selectedUser.lastName}}</h2>
+
+
+                    <div class="overlay-container col-md-3 ">
+
+                        <a class="overlay small" id="overlay" style="height:400px; width:200px;">
+                            <i class="fa fa-plus" id="addImage" height="400" width="200">Add Image</i>
+                        </a>
+
+                        <img ng-src="{{dashboard.getUserPhoto(dashboard.selectedUser.photo)}}" />
+
+                        <label for="picture">Please upload an image.</label>
+                    </div>
+
+
+                    <div class="columnbackground">
+
+                        @* column 1 *@
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+                                <label for="firstName">First Name:</label>
+                                <input type="text" class="form-control" id="firstName" minlength ng-model="dashboard.selectedUser.firstName" required="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lastName">Last Name:</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" ng-model="dashboard.selectedUser.lastName" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="handle">Handle:</label>
+                                <input type="text" class="form-control" id="handle" name="handle" ng-model="dashboard.selectedUser.handle" required min="5">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">E-mail (username):</label>
+                                <input type="text" class="form-control" id="email" name="email" ng-model="dashboard.selectedUser.email">
+                            </div>
+                        </div>
+
+                        @* column 2 *@
+
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number:</label>
+                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" ng-model="dashboard.selectedUser.phoneNumber">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dob">DOB:</label>
+                                <input type="text" class="form-control" id="dob" name="dob" ng-model="dashboard.selectedUser.dob">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="maritalStatus">Marital Status:</label>
+                                <select class="form-control" placeholder="Select One"
+                                        ng-model="dashboard.selectedUser.maritalStatus"
+                                        data-ng-options="item.key as item.value for item in dashboard.$votehub.page.serverModel.maritalStatus">
+                                    <option value="">--Select One--</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="languagesSpoken">Languages Spoken:</label>
+                                <input type="text" class="form-control" id="languagesSpoken" name="languagesSpoken"
+                                       ng-model="dashboard.selectedUser.languagesSpoken" />
+                            </div>
+                        </div>
+
+                        @* column 3 *@
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+                                <label for="gender">Gender:</label>
+                                <select class="form-control" id="gender" name="gender" placeholder="Select One"
+                                        ng-model=" dashboard.selectedUser.gender"
+                                        data-ng-options="item.key as item.value for item in dashboard.$votehub.page.serverModel.gender">
+                                    <option value="" selected>--Select One--</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="race">Race:</label>
+                                <select class="form-control" id="race" name="race" placeholder="Select One"
+                                        ng-model=" dashboard.selectedUser.race"
+                                        data-ng-options="item.key as item.value for item in dashboard.$votehub.page.serverModel.race">
+
+                                    <option value="" selected>--Select One--</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="politicalAffiliation">Political Affiliation:</label>
+                                <select class="form-control" id="politicalAffiliation" name="politicalAffiliation" placeholder="Select One"
+                                        ng-model=" dashboard.selectedUser.politicalAffiliation "
+                                        data-ng-options="item.key as item.value for item in dashboard.$votehub.page.serverModel.politicalAffiliation">
+                                    <option value="" selected>--Select One--</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="educationLevel">Education Level:</label>
+                                <select class="form-control" id="educationLevel" name="educationLevel" placeholder="Select One"
+                                        ng-model=" dashboard.selectedUser.educationLevel"
+                                        data-ng-options="item.key as item.value for item in dashboard.$votehub.page.serverModel.educationLevel">
+
+                                    <option value="" selected>--Select One--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            @*Update and Cancel buttons*@
+            <div class="row ">
+
+                <input type="button" class="btn btn-default" value="Update" id="cmdUpdateUserDetails" name="Update" data-ng-click="dashboard.updateProfileDetails()">
+
+                <input type="button" class="btn btn-default" value="cancel" data-ng-click="dashboard.selectUser(null)">
+            </div>
+        </div>
+    </div>
+
+    @* CANDIDATES *@
+    <div class="col-md-6 ">
+        <div class="titleRow">
+            <h2 align="center" class="bottomHeaderStyle">Candidates</h2>
+
+            <div class="bottomContentBackground">
+
+                <div data-ng-repeat="candidate in dashboard.candidates track by candidate.uid" class="row">
+                    <div class="bottomContentStyle">
+                        
+                        <div class="col-sm-3 firstName"> {{candidate.firstName}}</div>
+                        <div class="col-sm-3 lastName">{{candidate.lastName}}</div>
+                        <div class="col-sm-3 politicalParty">{{dashboard.intToString(candidate.politicalParty)}}</div>
+
+                        <a class="btn-sm iconStyle iconHover" href="http://votehub.dev/candidates/createprofile/{{candidate.uid}}" target="_blank">
+                            <i type="button" class="fa fa-pencil" value="" data-ng-click="dashboard.selectedCandidate(null)"> </i>
+                        </a>
+
+                        <a class="btn-sm iconStyle iconHover" href="http://votehub.dev/candidates/{{candidate.uid}}" target="_blank">
+                            <i type=" button" class="fa fa-eye" value="">
+                            </i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* EVENTS *@
+    <div>
+        <div class="col-md-6">
+            <div class="titleRow">
+                <h2 align="center" class="bottomHeaderStyle">Events</h2>
+                <div class="bottomContentBackground">
+
+                    <div data-ng-repeat="event in dashboard.events track by event.uid" class="row">
+                        <div class="bottomContentStyle">
+                            
+                            <div class="col-sm-3 eventDate">{{event.date | date : format : timezone}}</div>
+                            <div class="col-sm-3 eventName"> {{event.name}}</div>
+                            <div class="col-sm-3 venueName">{{event.venueName}}</div>
+
+                            <a class="btn-sm iconStyle iconHover" href="http://votehub.dev/events/create/{{event.uid}}" target="_blank">
+                               
+                                <i type="button" class="fa fa-pencil" value=""> </i>
+                            </a>
+
+                            <a class="btn-sm iconStyle iconHover" href="http://votehub.dev/events/{{event.uid}}" target="_blank">
+                                <i type="button" class="fa fa-eye" value=""> </i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        votehub.page.serverModel= @Html.RawJson(Model);
+
+    </script>
+
+    <script type="text/javascript" src="~/Scripts/votehub.services.users.js"></script>
+
+    <script type="text/javascript">
+
+        votehub.page.dashboardControllerFactory = function (
+              $scope
+            , $baseController
+            , $userService) {
+
+            var vm = this;
+            vm.items = null;
+            vm.testName = "achiamar";
+            vm.$userService = $userService;
+            vm.receiveItems = _receiveItems;
+            vm.onItemsError = _onError;
+
+            vm.selectUser = _selectUser;
+            vm.selectedUser = null; 
+            vm.receiveUserSuccess = _receiveUserSuccess;
+            vm.receiveUserError = _receiveUserError;
+
+            vm.updateProfileDetails = _updateProfileDetails;
+            vm.updateUserSuccess = _updateUserSuccess;
+            vm.updateUserError = _updateUserError;
+
+            vm.getUserPhoto = _getUserPhoto;
+
+            vm.receiveCandidateSuccess = _receiveCandidateSuccess;
+            vm.receiveCandidateError = _receiveCandidateError;
+
+            vm.candidates = null;
+
+            vm.intToString = _intToString;
+
+            vm.receiveEventSuccess = _receiveEventSuccess;
+            vm.receiveEventError = _receiveEventSuccess;
+
+            vm.events = null;
+
+
+            $.extend(vm, $baseController);  
+
+            vm.notify = vm.$userService.getNotifier($scope); 
+
+            render();
+
+            function render() {
+                vm.$userService.listusers(
+                    vm.receiveItems
+                    , vm.onItemsError);
+            }
+
+            function _receiveItems(data) { 
+                vm.notify(function () {
+                    vm.items = data.items;
+                });
+            }
+
+            function _onError(jqXhr, error) {
+                console.error(error);
+            }
+
+            function _selectUser(aUser) {
+                vm.selectedUser = aUser;
+                if (aUser) {
+                    vm.$userService.fullUserProfile
+                        (aUser.id, vm.receiveUserSuccess, vm.receiveUserError);
+                }
+
+            }
+
+            function _receiveUserSuccess(data) {
+
+                vm.notify(function () {
+                    vm.selectedUser = data.item;
+                });
+
+                vm.$userService.getCandidateByUser
+                        (vm.selectedUser.id, vm.receiveCandidateSuccess, vm.receiveCandidateError);
+
+                vm.$userService.getEventByUser
+                        (vm.selectedUser.id, vm.receiveEventSuccess, vm.receivedEventError);
+            }
+
+            function _receiveUserError() {
+                console.log("Cannot retrieve full user profile.");
+
+            }
+
+            function _receiveCandidateSuccess(data){
+                vm.notify(function() {
+                    vm.candidates = data.items});
+            }
+
+            function _receiveCandidateError(){
+                console.log("Error retrieving candidates created by this user.")
+            }
+
+            function _receiveEventSuccess(data){
+                vm.notify(function() {
+                    vm.events = data.items});
+            }
+
+            function _receiveEventError(){
+                console.log("Error retrieving events created by this user.")
+            }
+
+            function _updateProfileDetails() {
+                vm.$userService.updateUserProfileDetails(vm.selectedUser.id, vm.selectedUser,
+                    vm.updateUserSuccess, vm.updateUserError);
+                
+            }
+
+            function _updateUserSuccess(data) {  
+                vm.notify(function () {
+
+                    for (var i = 0; i < vm.items.length; i++) {
+
+                        if(vm.items[i].id === vm.selectedUser.id)
+                        { vm.items[i] = vm.selectedUser;
+                            break;
+                        }
+                    }
+
+                });
+                console.log("Profile updated.")
+            }
+
+            function _updateUserError() {
+                console.log("Error updating profile.")
+            }
+
+            function _updateUserDetailsSuccess() {
+                console.log("Profile updated.")
+            }
+
+            function _updateUserDetailsError() {
+                console.log("Error updating profile.")
+            }
+
+            function _getUserPhoto(photo) {
+                if (photo) {
+
+                    return "https://votehub-training.s3-us-west-2.amazonaws.com" + photo;
+
+                }
+                else {
+                    return "http://img2.wikia.nocookie.net/__cb20120225063657/downtonabbey/images/0/0c/Gentleman_silhouette.png";
+                }
+            }
+
+            function _intToString(party){
+
+                if(party && votehub.page.serverModel.politicalAffiliation[party]){
+                    return votehub.page.serverModel.politicalAffiliation[party].value;
+                }
+                else{
+                    return "unknown"
+                }
+            }
+
+        }
+
+        votehub.ng.addService(votehub.ng.app.module
+             , "$userService"
+             , ["$baseService"]
+             , votehub.services.users.dashboardFactory);
+
+        votehub.ng.addController(votehub.ng.app.module
+            , "dashboardController"
+            , ['$scope', '$baseController', "$userService"]
+            , votehub.page.dashboardControllerFactory);
+
+    </script>
+}
